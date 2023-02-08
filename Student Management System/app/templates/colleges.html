@@ -1,0 +1,295 @@
+{% extends 'base.html' %} {% block title %} Colleges {% endblock %} {% block
+navbar %}
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand">
+      <img
+        src="../../static/images/logo.png"
+        alt="Logo"
+        width="30"
+        height="24"
+        class="d-inline-block align-text-top"
+      />
+      Student Information System
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <a
+          class="nav-link"
+          aria-current="page"
+          href="{{ url_for('student.index') }}"
+          >Home</a
+        >
+        <a class="nav-link" href="{{ url_for('student.about_page') }}">About</a>
+      </div>
+    </div>
+  </div>
+</nav>
+{% endblock %} {% block body %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col md-4">
+      <h2 class="student-title">
+        <img
+          src="../../static/images/colleges.png"
+          alt="Logo"
+          width="40"
+          height="40"
+          class="d-inline-block align-text-top"
+        />
+        College List
+      </h2>
+      <div class="col md-4">
+        <button
+          class="btn custom-btn"
+          id="addNew"
+          data-bs-toggle="modal"
+          data-bs-target="#addCollegeForm"
+        >
+          Add college
+        </button>
+        <a
+          href="/colleges"
+          class="btn custom-btn-2"
+          role="button"
+          type="button"
+          aria-disabled="true"
+          >Refresh</a
+        >
+      </div>
+
+      <div class="search-form">
+        <form class="" method="post" action="{{url_for('college.search')}}">
+          <select id="field" name="field" class="form-select-search p-2">
+            <option value="code">College Code</option>
+            <option value="name">College Name</option>
+          </select>
+          <input
+            id="searchField"
+            type="text"
+            class="p-2 m-2 searchfield"
+            name="user-input"
+            placeholder="Search College Code"
+          />
+          <button class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {% include "alert_message.html"%}
+  </div>
+</div>
+
+<!-- College Data Table -->
+<div class="container my-3">
+  <table class="table table-hover table-responsive">
+    <thead class="table-custom">
+      <tr>
+        <th class="text-center" width="10%" scope="col">Code</th>
+        <th class="text-center" width="35%" scope="col">College</th>
+        <th class="text-center" width="13%" scope="col">Course Count</th>
+        <th class="text-center" width="13%" scope="col">Student Count</th>
+        <th class="text-center" width="17%" scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for college in data[2] %}
+      <tr
+        data-bs-toggle="modal"
+        data-bs-target="#CollegeDepartments{{college.0}}"
+      >
+        <th class="text-center"><b>{{college.0}}</b></th>
+        <td class="text-center">{{college.1}}</td>
+        <td class="text-center">{{college.2}}</td>
+        <td class="text-center">{{college.3}}</td>
+        <td class="text-center">
+          <a
+            href="{{url_for('college.update', id=college.0)}}"
+            class="btn btn-outline-info mx-2"
+            data-bs-toggle="modal"
+            data-bs-target="#editCollegeForm{{college.0}}"
+            ><i class="fas fa-edit"></i> Edit</a
+          >
+          <a
+            href="{{url_for('college.delete', id=college.0)}}"
+            class="btn btn-outline-danger"
+            onclick="return confirm('Are you sure you want to remove {{college.1}} ?')"
+            ><i class="fas fa-trash"></i> Delete</a
+          >
+        </td>
+      </tr>
+
+      <!-- Edit College Modal  -->
+      <div
+        class="modal fade"
+        id="editCollegeForm{{college.0}}"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <div class="d-flex">
+                <h5 class="modal-title" id="courseformtitle">Edit College</h5>
+              </div>
+              <button
+                class="btn-close"
+                type="button"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+
+            <div class="modal-body">
+              <form
+                action="{{ url_for('college.update', id=college.0) }}"
+                class="needs-validation"
+                method="post"
+              >
+                <div class="mb-3">
+                  <label for="college-code" class="form-label"
+                    >College Code</label
+                  >
+                  <input
+                    type="collegeinfo"
+                    class="form-control"
+                    id="college-code"
+                    value="{{college.0}}"
+                    name="college-code"
+                    disabled
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="college-name" class="form-label"
+                    >college Name</label
+                  >
+                  <input
+                    type="collegeinfo"
+                    class="form-control"
+                    id="college-name"
+                    value="{{college.1}}"
+                    name="college-name"
+                    required
+                  />
+                </div>
+                <div class="modal-footer">
+                  <button
+                    class="btn btn-secondary"
+                    type="button"
+                    data-bs-dismiss="modal"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    class="btn custom-btn-2"
+                    type="submit"
+                    id="addCourseclicked"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+
+      <!-- Add College Modal  -->
+      <div
+        class="modal fade"
+        id="addCollegeForm"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <div class="d-flex">
+                <h5 class="modal-title" id="courseformtitle">
+                  Add New College
+                </h5>
+              </div>
+              <button
+                class="btn-close"
+                type="button"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+
+            <div class="modal-body">
+              <form
+                action="{{ url_for('college.add') }}"
+                class="needs-validation"
+                method="post"
+              >
+                <div class="mb-3">
+                  <label for="college-code" class="form-label"
+                    >College Code</label
+                  >
+                  <input
+                    type="courseinfo"
+                    class="form-control"
+                    id="college-code"
+                    name="college-code"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="college-name" class="form-label"
+                    >College Name</label
+                  >
+                  <input
+                    type="courseinfo"
+                    class="form-control"
+                    id="college-name"
+                    name="college-name"
+                    required
+                  />
+                </div>
+                <div class="modal-footer">
+                  <button
+                    class="btn btn-secondary"
+                    type="button"
+                    data-bs-dismiss="modal"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    class="btn custom-btn-2"
+                    type="submit"
+                    id="addCourseclicked"
+                  >
+                    Add College
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% endblock %}
+    </tbody>
+  </table>
+</div>

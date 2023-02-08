@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Menu
+{% endblock %}
+
+{% block body %}
+<!-- Menu -->
+<div class="container-fluid">
+    <div class="container">
+        <div class="item-container">
+            <div class="img-container">
+                <img src="../../static/images/view_students.png" alt="Event image">
+            </div>
+
+            <div class="body-container">
+                <div class="overlay"></div>
+                <div class="card-title">
+                    <p class="title">View Students</p>
+                </div>
+                <a href="{{ url_for('student.students') }}">
+                    <button class="action">View Students</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="item-container">
+            <div class="img-container">
+                <img src="../../static/images/view_colleges.png" alt="Event image">
+            </div>
+
+            <div class="body-container">
+                <div class="overlay"></div>
+                <div class="card-title">
+                    <p class="title">View Colleges</p>
+                </div>
+                <a href="{{ url_for('college.colleges') }}">
+                    <button class="action">View Colleges</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="item-container">
+            <div class="img-container">
+                <img src="../../static/images/view_courses.png" alt="Event image">
+            </div>
+
+            <div class="body-container">
+                <div class="overlay"></div>
+                <div class="card-title">
+                    <p class="title">View Courses</p>
+                </div>
+                <a href="{{ url_for('course.courses') }}">
+                    <button class="action">View Courses</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
